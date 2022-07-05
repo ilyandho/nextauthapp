@@ -7,11 +7,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "../../../server/db/client";
 
-console.log(
-  "---->",
-  [process.env.GITHUB_ID, process.env.GITHUB_SECRET],
-  [process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET]
-);
 export const authOptions: NextAuthOptions = {
   // Configure one or more authentication providers
   adapter: PrismaAdapter(prisma),
@@ -25,21 +20,33 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
     // ...add more providers here
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        name: {
-          label: "Name",
-          type: "text",
-          placeholder: "Enter your name",
-        },
-      },
-      async authorize(credentials, _req) {
-        const user = { id: 1, name: credentials?.name ?? "J Smith" };
-        return user;
-      },
-    }),
+    // CredentialsProvider({
+    //   name: "Credentials",
+    //   credentials: {
+    //     name: {
+    //       label: "Name",
+    //       type: "text",
+    //       placeholder: "Enter your name",
+    //     },
+    //   },
+    //   async authorize(credentials, _req) {
+    //     const user = { id: 1, name: credentials?.name ?? "J Smith" };
+    //     return user;
+    //   },
+    // }),
   ],
+  pages: {
+    signIn: "/user/authentication",
+  },
+  // callbacks: {
+  //   async redirect({ url, baseUrl }) {
+  //     // Allows relative callback URLs
+  //     if (url.startsWith("/")) return `${baseUrl}${url}`;
+  //     // Allows callback URLs on the same origin
+  //     else if (new URL(url).origin === baseUrl) return url;
+  //     return baseUrl;
+  //   },
+  // },
 };
 
 export default NextAuth(authOptions);
